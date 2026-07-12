@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      complaints: {
+        Row: {
+          category: string
+          complaint_code: string
+          created_at: string
+          description: string
+          hostel_block: string | null
+          id: string
+          room_number: string | null
+          status: string
+          student_id: string
+          student_name: string
+        }
+        Insert: {
+          category: string
+          complaint_code?: string
+          created_at?: string
+          description: string
+          hostel_block?: string | null
+          id?: string
+          room_number?: string | null
+          status?: string
+          student_id: string
+          student_name: string
+        }
+        Update: {
+          category?: string
+          complaint_code?: string
+          created_at?: string
+          description?: string
+          hostel_block?: string | null
+          id?: string
+          room_number?: string | null
+          status?: string
+          student_id?: string
+          student_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
