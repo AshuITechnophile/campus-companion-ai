@@ -95,7 +95,7 @@ function Nav() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-hero shadow-elegant">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-semibold tracking-tight">Campus Companion</span>
+          <span className="font-semibold tracking-tight">SageSync</span>
         </a>
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           <a href="#features" className="transition-colors hover:text-foreground">Features</a>
@@ -125,13 +125,13 @@ function Hero() {
         <div className="animate-fade-in-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Built for first-year students
+            Built for Sage University Indore students
           </span>
           <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            Your AI <span className="bg-gradient-hero bg-clip-text text-transparent">Campus Companion</span>
+            Your AI <span className="bg-gradient-hero bg-clip-text text-transparent">SageSync</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Ask campus-related questions, get instant answers, and raise complaints — all from one intelligent AI assistant.
+            Ask Sage University Indore questions, get instant answers, and raise complaints — all from one intelligent AI assistant.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-full px-7 shadow-elegant">
@@ -152,7 +152,7 @@ function Hero() {
           <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-elegant">
             <img
               src={heroImage}
-              alt="Campus Companion AI illustration"
+              alt="SageSync AI illustration"
               width={1024}
               height={1024}
               className="h-full w-full object-cover"
@@ -224,9 +224,9 @@ function ChatSection() {
   return (
     <section id="chat" className="mx-auto max-w-5xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Talk to Campus Companion</h2>
+        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Talk to SageSync</h2>
         <p className="mt-4 text-muted-foreground">
-          Ask anything about campus, or describe an issue to raise a complaint.
+          Ask anything about Sage University Indore, or describe an issue to raise a complaint.
         </p>
       </div>
       <div className="mt-10">
@@ -269,7 +269,7 @@ function ChatWindow() {
           <Sparkles className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
-          <div className="text-sm font-semibold">Campus Companion</div>
+          <div className="text-sm font-semibold">SageSync</div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Online
           </div>
@@ -352,7 +352,7 @@ function EmptyState({ onPick }: { onPick: (text: string) => void }) {
       </div>
       <h3 className="mt-5 text-xl font-semibold">How can I help you today?</h3>
       <p className="mt-2 max-w-md text-sm text-muted-foreground">
-        Ask about campus life, timings, contacts, or describe an issue to raise a complaint.
+        Ask about Sage University Indore life, timings, contacts, or describe an issue to raise a complaint.
       </p>
       <div className="mt-6 grid w-full max-w-lg grid-cols-2 gap-2 sm:grid-cols-4">
         {SUGGESTIONS.map((s) => (
@@ -464,7 +464,7 @@ function Footer() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-hero">
               <Sparkles className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold">Campus Companion</span>
+            <span className="font-semibold">SageSync</span>
           </div>
           <nav className="flex flex-wrap gap-6 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground">About</a>
@@ -474,7 +474,7 @@ function Footer() {
           </nav>
         </div>
         <div className="mt-8 border-t border-border pt-6 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Campus Companion. Built for students, with care.
+          © {new Date().getFullYear()} SageSync. Built for Sage University Indore students, with care.
         </div>
       </div>
     </footer>
