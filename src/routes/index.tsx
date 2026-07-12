@@ -50,7 +50,7 @@ const FEATURES = [
   {
     icon: Zap,
     title: "Instant Student Support",
-    desc: "Get answers in seconds instead of walking between offices.",
+    desc: "Get answers in seconds instead of walking between offices at Sage University Indore.",
   },
   {
     icon: MapPin,

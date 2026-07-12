@@ -77,18 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Campus Companion — Your AI Assistant for Campus Life" },
+      { title: "SageSync — Your AI Assistant for Sage University Indore" },
       {
         name: "description",
         content:
-          "Ask campus questions, get instant AI answers, and raise complaints — all from one intelligent assistant built for first-year students.",
+          "Ask Sage University Indore questions, get instant AI answers, and raise complaints — all from one intelligent assistant built for first-year students.",
       },
-      { name: "author", content: "Campus Companion" },
-      { property: "og:title", content: "Campus Companion — Your AI Assistant for Campus Life" },
+      { name: "author", content: "SageSync" },
+      { property: "og:title", content: "SageSync — Your AI Assistant for Sage University Indore" },
       {
         property: "og:description",
         content:
-          "Ask campus questions, get instant AI answers, and raise complaints — all from one intelligent assistant built for first-year students.",
+          "Ask Sage University Indore questions, get instant AI answers, and raise complaints — all from one intelligent assistant built for first-year students.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
