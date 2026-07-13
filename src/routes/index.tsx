@@ -391,14 +391,8 @@ function EmptyState({ onPick }: { onPick: (text: string) => void }) {
   );
 }
 
-function MessageBubble({ role, parts }: { role: string; parts: MessagePart[] }) {
+function MessageBubble({ role, text }: { role: string; text: string }) {
   const isUser = role === "user";
-  const text = parts
-    .filter((p) => p.type === "text")
-    .map((p) => p.text ?? "")
-    .join("");
-  const toolCalls = parts.filter((p) => p.type?.startsWith("tool-"));
-
   return (
     <div className={`flex gap-3 animate-fade-in-up ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
@@ -407,57 +401,26 @@ function MessageBubble({ role, parts }: { role: string; parts: MessagePart[] }) 
         </div>
       )}
       <div className={`max-w-[85%] ${isUser ? "order-1" : ""}`}>
-        {text && (
-          <div
-            className={
-              isUser
-                ? "rounded-2xl rounded-tr-md bg-primary px-4 py-2.5 text-sm text-primary-foreground shadow-card"
-                : "rounded-2xl rounded-tl-md bg-muted px-4 py-2.5 text-sm text-foreground"
-            }
-          >
-            {isUser ? (
-              <p className="whitespace-pre-wrap">{text}</p>
-            ) : (
-              <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-strong:text-foreground">
-                <ReactMarkdown>{text}</ReactMarkdown>
-              </div>
-            )}
-          </div>
-        )}
-        {toolCalls.map((t, i) => {
-          const output = t.output as { success?: boolean; complaint_id?: string; error?: string } | undefined;
-          if (!output) return null;
-          if (output.success && output.complaint_id) {
-            return (
-              <div
-                key={i}
-                className="mt-2 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
-              >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
-                  <Check className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="font-semibold">Complaint submitted</div>
-                  <div className="mt-0.5 text-emerald-800">
-                    Tracking ID: <span className="font-mono font-semibold">{output.complaint_id}</span>
-                  </div>
-                </div>
-              </div>
-            );
+        <div
+          className={
+            isUser
+              ? "rounded-2xl rounded-tr-md bg-primary px-4 py-2.5 text-sm text-primary-foreground shadow-card"
+              : "rounded-2xl rounded-tl-md bg-muted px-4 py-2.5 text-sm text-foreground"
           }
-          if (output.error) {
-            return (
-              <div key={i} className="mt-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
-                Failed to submit: {output.error}
-              </div>
-            );
-          }
-          return null;
-        })}
+        >
+          {isUser ? (
+            <p className="whitespace-pre-wrap">{text}</p>
+          ) : (
+            <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-strong:text-foreground">
+              <ReactMarkdown>{text}</ReactMarkdown>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
 
 function TypingIndicator() {
   return (
