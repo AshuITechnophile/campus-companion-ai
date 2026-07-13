@@ -234,30 +234,52 @@ function ChatSection() {
   );
 }
 
-type MessagePart = { type: string; text?: string; toolName?: string; output?: unknown };
+type ChatMessage = { id: string; role: "user" | "assistant"; text: string };
 
 function ChatWindow() {
-  const transport = useRef(new DefaultChatTransport({ api: "/api/chat" })).current;
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, status]);
+  }, [messages, isLoading]);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, [status]);
+    if (!isLoading) inputRef.current?.focus();
+  }, [isLoading]);
 
-  const isLoading = status === "submitted" || status === "streaming";
-
-  function submit(text: string) {
+  async function submit(text: string) {
     const value = text.trim();
     if (!value || isLoading) return;
-    void sendMessage({ text: value });
+    setError(null);
+    const history = [...messages, { id: crypto.randomUUID(), role: "user" as const, text: value }];
+    setMessages(history);
     setInput("");
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: value,
+          history: history.map((m) => ({ role: m.role, text: m.text })),
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "assistant", text: data.reply ?? "(no response)" },
+      ]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -280,16 +302,17 @@ function ChatWindow() {
       >
         {messages.length === 0 && <EmptyState onPick={submit} />}
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} parts={m.parts as MessagePart[]} />
+          <MessageBubble key={m.id} role={m.role} text={m.text} />
         ))}
         {isLoading && <TypingIndicator />}
         {error && (
           <div className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
             <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Something went wrong. Please try again in a moment.</span>
+            <span>{error}</span>
           </div>
         )}
       </div>
+
 
       {messages.length > 0 && (
         <div className="flex flex-wrap gap-2 border-t border-border bg-muted/30 px-4 py-3 md:px-6">
