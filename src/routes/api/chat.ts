@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+// Use the PRODUCTION webhook URL (`/webhook/`), not the test URL (`/webhook-test/`).
+// Test URLs only accept one request after clicking "Listen for test event" in n8n
+// and then return 404 "webhook is not registered".
 const N8N_WEBHOOK_URL =
-  "https://ashutosh2005.app.n8n.cloud/webhook-test/0be283df-ac6d-4d36-8c5f-84c16625fa02";
+  "https://ashutosh2005.app.n8n.cloud/webhook/0be283df-ac6d-4d36-8c5f-84c16625fa02";
 
 export const Route = createFileRoute("/api/chat")({
   server: {
