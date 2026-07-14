@@ -36,7 +36,7 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const requestBody = JSON.stringify({
-          message,
+          query: message,
           history: payload.history ?? [],
           timestamp: new Date().toISOString(),
         });
