@@ -13,13 +13,18 @@ import {
   ArrowRight,
   BookOpen,
   Home,
-  UtensilsCrossed,
-  Wifi,
   Bus,
-  Map,
   ShieldCheck,
   CircleAlert,
   Check,
+  MessageCircleQuestion,
+  Database,
+  ClipboardCheck,
+  GraduationCap,
+  CalendarDays,
+  LifeBuoy,
+  Search,
+  Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero.jpg";
 import { Button } from "@/components/ui/button";
@@ -31,48 +36,51 @@ export const Route = createFileRoute("/")({
 const SUGGESTIONS = [
   { icon: BookOpen, label: "Library Timings" },
   { icon: Home, label: "Hostel Fees" },
-  { icon: UtensilsCrossed, label: "Mess Timings" },
+  { icon: Bus, label: "Transport" },
+  { icon: LifeBuoy, label: "ERP Help" },
   { icon: ClipboardList, label: "Raise Complaint" },
-  { icon: Wifi, label: "WiFi Issues" },
-  { icon: Map, label: "Campus Map" },
-  { icon: ShieldCheck, label: "Hostel Rules" },
-  { icon: Bus, label: "Bus Timings" },
+  { icon: Search, label: "Track Complaint" },
+  { icon: Phone, label: "Contact Administration" },
+  { icon: CalendarDays, label: "Examination Schedule" },
 ];
 
 const FEATURES = [
   {
     icon: Brain,
     title: "AI-Powered Campus Assistant",
-    desc: "Understands your questions naturally — no menus, no keywords, just ask.",
+    desc: "Ask questions naturally and receive accurate university information instantly.",
   },
   {
     icon: Zap,
     title: "Instant Student Support",
-    desc: "Get answers in seconds instead of walking between offices at Sage University Indore.",
+    desc: "No searching across websites. Get answers in seconds.",
   },
   {
     icon: MapPin,
     title: "Campus Information",
-    desc: "Timings, locations, contacts, and rules — all in one place.",
+    desc: "Fees, hostel, library, transport, academics, ERP and more.",
   },
   {
     icon: ClipboardList,
-    title: "Complaint Submission",
-    desc: "Raise maintenance and admin issues right from the chat.",
+    title: "Complaint Management",
+    desc: "Register complaints and track their status using your Complaint ID.",
   },
   {
     icon: MessageSquare,
     title: "Smart Conversations",
-    desc: "Follow-up questions, context, and clarity — like talking to a helpful senior.",
+    desc: "Remembers conversation context for a smoother chat experience.",
   },
   {
     icon: Rocket,
     title: "Fast & Reliable",
-    desc: "Streaming responses tuned for a snappy student-first experience.",
+    desc: "Powered by AI with quick responses and accurate information.",
   },
 ];
 
+const SECTIONS = ["features", "how", "chat"] as const;
+
 function LandingPage() {
+  useScrollReveal();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
@@ -85,7 +93,52 @@ function LandingPage() {
   );
 }
 
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>(".reveal");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+function useActiveSection() {
+  const [active, setActive] = useState<string>("");
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+    );
+    SECTIONS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+    return () => io.disconnect();
+  }, []);
+  return active;
+}
+
 function Nav() {
+  const active = useActiveSection();
+  const links = [
+    { id: "features", label: "Features" },
+    { id: "how", label: "How it works" },
+    { id: "chat", label: "Chat" },
+  ];
   return (
     <header className="sticky top-0 z-40 glass border-b border-border/60">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -95,12 +148,25 @@ function Nav() {
           </div>
           <span className="font-semibold tracking-tight">SageSync</span>
         </a>
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="transition-colors hover:text-foreground">Features</a>
-          <a href="#how" className="transition-colors hover:text-foreground">How it works</a>
-          <a href="#chat" className="transition-colors hover:text-foreground">Chat</a>
+        <nav className="hidden items-center gap-8 text-sm md:flex">
+          {links.map((l) => (
+            <a
+              key={l.id}
+              href={`#${l.id}`}
+              className={`relative transition-colors hover:text-foreground ${
+                active === l.id ? "text-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {l.label}
+              <span
+                className={`absolute -bottom-1 left-0 h-0.5 rounded-full bg-primary transition-all duration-300 ${
+                  active === l.id ? "w-full" : "w-0"
+                }`}
+              />
+            </a>
+          ))}
         </nav>
-        <Button asChild size="sm" className="rounded-full px-5">
+        <Button asChild size="sm" className="rounded-full px-5 transition-transform hover:scale-105">
           <a href="#chat">Get Started</a>
         </Button>
       </div>
@@ -123,20 +189,20 @@ function Hero() {
         <div className="animate-fade-in-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Built for Sage University Indore students
+            Built for SAGE University students
           </span>
           <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            Your AI <span className="bg-gradient-hero bg-clip-text text-transparent">SageSync</span>
+            Your AI <span className="bg-gradient-hero bg-clip-text text-transparent">Campus Assistant</span> for SAGE University
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Ask Sage University Indore questions, get instant answers, and raise complaints — all from one intelligent AI assistant.
+            Get instant answers about university services, contacts, fees, hostel, transport, and register or track complaints — all in one place.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-full px-7 shadow-elegant">
+            <Button asChild size="lg" className="rounded-full px-7 shadow-elegant transition-transform hover:scale-105">
               <a href="#chat">Start Chatting <ArrowRight className="ml-1 h-4 w-4" /></a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full px-7">
-              <a href="#features">Learn More</a>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7 transition-transform hover:scale-105">
+              <a href="#features">See Features</a>
             </Button>
           </div>
           <div className="mt-8 flex items-center gap-6 text-xs text-muted-foreground">
@@ -146,11 +212,11 @@ function Hero() {
           </div>
         </div>
         <div className="relative animate-fade-in-up">
-          <div className="absolute -inset-6 rounded-[2rem] bg-gradient-hero opacity-20 blur-2xl" aria-hidden />
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-elegant">
+          <div className="absolute -inset-6 rounded-[2rem] bg-gradient-hero opacity-20 blur-2xl animate-float" aria-hidden />
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-elegant animate-float">
             <img
               src={heroImage}
-              alt="SageSync AI illustration"
+              alt="AI campus assistant for SAGE University"
               width={1024}
               height={1024}
               className="h-full w-full object-cover"
@@ -165,7 +231,7 @@ function Hero() {
 function Features() {
   return (
     <section id="features" className="mx-auto max-w-6xl px-6 py-24">
-      <div className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-2xl text-center reveal">
         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
           Everything you need on day one
         </h2>
@@ -177,7 +243,7 @@ function Features() {
         {FEATURES.map((f) => (
           <div
             key={f.title}
-            className="group rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-elegant"
+            className="reveal group rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-elegant"
           >
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground transition-colors group-hover:bg-gradient-hero group-hover:text-primary-foreground">
               <f.icon className="h-5 w-5" />
@@ -193,22 +259,28 @@ function Features() {
 
 function HowItWorks() {
   const steps = [
-    { n: "01", title: "Ask your question", desc: "Type naturally — no forms, no filters." },
-    { n: "02", title: "Get an instant AI response", desc: "Clear, conversational, and to the point." },
-    { n: "03", title: "Raise a complaint if needed", desc: "We log it to the backend with a tracking ID." },
+    { n: "01", icon: MessageCircleQuestion, title: "Ask", desc: "Ask any university question." },
+    { n: "02", icon: Database, title: "Get answers", desc: "Get verified information instantly from the university knowledge base." },
+    { n: "03", icon: ClipboardCheck, title: "Track", desc: "Register complaints and track them anytime using your Complaint ID." },
   ];
   return (
     <section id="how" className="border-y border-border bg-muted/40">
       <div className="mx-auto max-w-6xl px-6 py-24">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-2xl text-center reveal">
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl">How it works</h2>
           <p className="mt-4 text-muted-foreground">Three simple steps. That's it.</p>
         </div>
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
           {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-border bg-card p-8 shadow-card">
-              <div className="text-sm font-semibold text-primary">{s.n}</div>
-              <h3 className="mt-3 text-xl font-semibold">{s.title}</h3>
+            <div
+              key={s.n}
+              className="reveal rounded-2xl border border-border bg-card p-8 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-elegant"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-hero text-primary-foreground shadow-elegant">
+                <s.icon className="h-5 w-5" />
+              </div>
+              <div className="mt-4 text-sm font-semibold text-primary">{s.n}</div>
+              <h3 className="mt-1 text-xl font-semibold">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
             </div>
           ))}
@@ -221,13 +293,13 @@ function HowItWorks() {
 function ChatSection() {
   return (
     <section id="chat" className="mx-auto max-w-5xl px-6 py-24">
-      <div className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-2xl text-center reveal">
         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Talk to SageSync</h2>
         <p className="mt-4 text-muted-foreground">
-          Ask anything about Sage University Indore, or describe an issue to raise a complaint.
+          Ask anything about SAGE University, or describe an issue to raise a complaint.
         </p>
       </div>
-      <div className="mt-10">
+      <div className="mt-10 reveal">
         <ChatWindow />
       </div>
     </section>
@@ -321,7 +393,7 @@ function ChatWindow() {
               key={s.label}
               onClick={() => submit(s.label)}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/40 hover:text-foreground disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground disabled:opacity-50"
             >
               <s.icon className="h-3.5 w-3.5" />
               {s.label}
@@ -355,7 +427,7 @@ function ChatWindow() {
           type="submit"
           size="icon"
           disabled={!input.trim() || isLoading}
-          className="h-11 w-11 shrink-0 rounded-xl"
+          className="h-11 w-11 shrink-0 rounded-xl transition-transform hover:scale-105"
           aria-label="Send message"
         >
           <Send className="h-4 w-4" />
@@ -368,21 +440,24 @@ function ChatWindow() {
 function EmptyState({ onPick }: { onPick: (text: string) => void }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-hero shadow-elegant">
-        <Sparkles className="h-6 w-6 text-primary-foreground" />
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-hero shadow-elegant animate-float">
+        <GraduationCap className="h-7 w-7 text-primary-foreground" />
       </div>
       <h3 className="mt-5 text-xl font-semibold">How can I help you today?</h3>
       <p className="mt-2 max-w-md text-sm text-muted-foreground">
-        Ask about Sage University Indore life, timings, contacts, or describe an issue to raise a complaint.
+        Ask about SAGE University life, timings, contacts, or describe an issue to raise a complaint.
       </p>
-      <div className="mt-6 grid w-full max-w-lg grid-cols-2 gap-2 sm:grid-cols-4">
+      <p className="mt-6 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        Try asking one of these questions
+      </p>
+      <div className="mt-3 grid w-full max-w-2xl grid-cols-2 gap-2 sm:grid-cols-4">
         {SUGGESTIONS.map((s) => (
           <button
             key={s.label}
             onClick={() => onPick(s.label)}
-            className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-xs font-medium text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground hover:shadow-card"
+            className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-xs font-medium text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground hover:shadow-card"
           >
-            <s.icon className="h-4 w-4 text-primary" />
+            <s.icon className="h-4 w-4 text-primary transition-transform group-hover:scale-110" />
             {s.label}
           </button>
         ))}
@@ -458,7 +533,12 @@ function Footer() {
           </nav>
         </div>
         <div className="mt-8 border-t border-border pt-6 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} SageSync. Built for Sage University Indore students, with care.
+          <div className="font-medium text-foreground/80">
+            Powered by AI • Built for SAGE University Students
+          </div>
+          <div className="mt-1">
+            © {new Date().getFullYear()} SageSync. Built for SAGE University students, with care.
+          </div>
         </div>
       </div>
     </footer>
