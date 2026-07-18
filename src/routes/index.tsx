@@ -880,12 +880,21 @@ function ChatWindow() {
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          text: data.reply ?? "(no response)",
+          text: data.reply ?? "Sorry, something went wrong while contacting the AI assistant.",
           ts: Date.now(),
         },
       ]);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "Sorry, something went wrong while contacting the AI assistant.",
+          ts: Date.now(),
+        },
+      ]);
+      setError("Sorry, something went wrong while contacting the AI assistant.");
     } finally {
       setIsLoading(false);
     }
