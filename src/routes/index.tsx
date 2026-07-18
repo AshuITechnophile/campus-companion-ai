@@ -1260,7 +1260,7 @@ function MessageBubble({ message, onQuick }: { message: ChatMessage; onQuick: (t
             </div>
           )}
         </div>
-        {!isUser && complaint && <ComplaintCard data={complaint} onTrack={(t) => window.dispatchEvent(new CustomEvent("sagesync-quick", { detail: t }))} />}
+        {!isUser && complaint && <ComplaintCard data={complaint} onTrack={onQuick} />}
         <div
           className={`mt-1 flex items-center gap-2 text-[11px] text-[#6B7280] ${
             isUser ? "flex-row-reverse" : ""
