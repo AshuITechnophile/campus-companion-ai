@@ -1213,7 +1213,7 @@ function ComplaintCard({
   );
 }
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({ message, onQuick }: { message: ChatMessage; onQuick: (text: string) => void }) {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
   const complaint = useComplaintCard(isUser ? "" : message.text);
