@@ -62,9 +62,9 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  --background: oklch(0.984 0.005 247);
-  --foreground: oklch(0.24 0.05 262);
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.2 0.02 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.24 0.05 262);
   --popover: oklch(1 0 0);
@@ -82,13 +82,13 @@
   --destructive-foreground: oklch(0.99 0 0);
   --success: oklch(0.68 0.16 160);
   --warning: oklch(0.78 0.16 75);
-  --border: oklch(0.92 0.01 255);
-  --input: oklch(0.94 0.01 255);
+  --border: oklch(0.93 0.005 260);
+  --input: oklch(0.94 0.005 260);
   --ring: oklch(0.548 0.213 262.9);
   --gradient-hero: linear-gradient(135deg, oklch(0.548 0.213 262.9) 0%, oklch(0.6 0.2 285) 100%);
-  --gradient-soft: linear-gradient(180deg, oklch(0.984 0.005 247) 0%, oklch(0.95 0.04 260) 100%);
-  --shadow-elegant: 0 20px 50px -20px color-mix(in oklab, oklch(0.548 0.213 262.9) 25%, transparent);
-  --shadow-card: 0 4px 20px -8px color-mix(in oklab, oklch(0.24 0.05 262) 12%, transparent);
+  --gradient-soft: linear-gradient(180deg, oklch(0.99 0.003 250) 0%, oklch(0.97 0.008 255) 100%);
+  --shadow-elegant: 0 1px 2px oklch(0.2 0.02 260 / 0.04), 0 8px 24px -12px oklch(0.2 0.02 260 / 0.08);
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 260 / 0.04);
   --chart-1: oklch(0.548 0.213 262.9);
   --chart-2: oklch(0.6 0.19 285);
   --chart-3: oklch(0.68 0.16 160);
