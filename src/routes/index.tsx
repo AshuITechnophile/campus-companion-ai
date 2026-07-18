@@ -9,7 +9,7 @@ import {
   Brain,
   ArrowRight,
   BookOpen,
-  Home,
+  Home as HomeIcon,
   Bus,
   ShieldCheck,
   CircleAlert,
@@ -25,6 +25,16 @@ import {
   Github,
   Twitter,
   Linkedin,
+  Building2,
+  Users,
+  BellRing,
+  Mail,
+  MapPin,
+  ChevronDown,
+  Bot,
+  FileSearch,
+  BadgeCheck,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -34,7 +44,7 @@ export const Route = createFileRoute("/")({
 
 const SUGGESTIONS = [
   { icon: BookOpen, label: "Library timings" },
-  { icon: Home, label: "Hostel fees" },
+  { icon: HomeIcon, label: "Hostel fees" },
   { icon: Bus, label: "Transport routes" },
   { icon: LifeBuoy, label: "ERP help" },
   { icon: ClipboardList, label: "Raise a complaint" },
@@ -43,7 +53,7 @@ const SUGGESTIONS = [
   { icon: CalendarDays, label: "Exam schedule" },
 ];
 
-const SECTIONS = ["features", "how", "chat"] as const;
+const SECTIONS = ["top", "features", "how", "faq", "contact", "chat"] as const;
 
 function LandingPage() {
   useScrollReveal();
@@ -52,9 +62,11 @@ function LandingPage() {
       <AnnouncementBar />
       <Nav />
       <Hero />
-      <LogoStrip />
+      <TrustSection />
       <Features />
       <HowItWorks />
+      <FAQ />
+      <Contact />
       <ChatSection />
       <Footer />
     </div>
@@ -81,7 +93,7 @@ function useScrollReveal() {
 }
 
 function useActiveSection() {
-  const [active, setActive] = useState<string>("");
+  const [active, setActive] = useState<string>("top");
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
@@ -102,19 +114,19 @@ function useActiveSection() {
 
 function AnnouncementBar() {
   return (
-    <div className="w-full border-b border-border bg-muted/40">
+    <div className="w-full border-b border-border bg-[#F8FAFC]">
       <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-6 py-2 text-xs">
-        <span className="inline-flex h-4 items-center rounded-full border border-border bg-background px-1.5 text-[10px] font-medium tracking-wide text-muted-foreground">
-          NEW
+        <span className="inline-flex h-[18px] items-center rounded-full border border-border bg-background px-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#111827]">
+          New
         </span>
-        <span className="text-muted-foreground">
-          SageSync is live for SAGE University Indore students —
+        <span className="text-[#6B7280]">
+          Official AI Campus Companion — now with complaint tracking
         </span>
         <a
           href="#chat"
-          className="inline-flex items-center gap-1 font-medium text-foreground hover:text-primary"
+          className="inline-flex items-center gap-1 font-medium text-[#111827] hover:text-primary"
         >
-          try the assistant <ArrowUpRight className="h-3 w-3" />
+          try it <ArrowUpRight className="h-3 w-3" />
         </a>
       </div>
     </div>
@@ -122,59 +134,82 @@ function AnnouncementBar() {
 }
 
 function BrandMark({ size = "md" }: { size?: "sm" | "md" }) {
-  const dim = size === "sm" ? "h-6 w-6" : "h-7 w-7";
+  const dim = size === "sm" ? "h-7 w-7" : "h-8 w-8";
   return (
     <div
-      className={`${dim} flex items-center justify-center rounded-md bg-foreground text-background`}
+      className={`${dim} flex items-center justify-center rounded-[8px] bg-[#111827] text-white`}
     >
-      <Sparkles className="h-3.5 w-3.5" />
+      <Sparkles className="h-4 w-4" />
     </div>
   );
 }
 
 function Nav() {
   const active = useActiveSection();
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const links = [
+    { id: "top", label: "Home" },
     { id: "features", label: "Features" },
-    { id: "how", label: "How it works" },
+    { id: "how", label: "How It Works" },
+    { id: "faq", label: "FAQ" },
+    { id: "contact", label: "Contact" },
     { id: "chat", label: "Chat" },
   ];
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors ${
+        scrolled
+          ? "border-border bg-background/80 backdrop-blur-md"
+          : "border-transparent bg-background"
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a href="#top" className="flex items-center gap-2">
+        <a href="#top" className="flex items-center gap-2.5">
           <BrandMark />
-          <span className="text-[15px] font-semibold tracking-tight">SageSync</span>
+          <div className="leading-tight">
+            <div className="text-[15px] font-semibold tracking-tight text-[#111827]">
+              SageSync
+            </div>
+            <div className="text-[10px] font-medium uppercase tracking-wider text-[#6B7280]">
+              Campus Companion
+            </div>
+          </div>
         </a>
-        <nav className="hidden items-center gap-7 text-[13px] md:flex">
+        <nav className="hidden items-center gap-6 text-[13px] font-medium lg:flex">
           {links.map((l) => (
             <a
               key={l.id}
               href={`#${l.id}`}
-              className={`transition-colors hover:text-foreground ${
-                active === l.id ? "text-foreground" : "text-muted-foreground"
+              className={`transition-colors ${
+                active === l.id
+                  ? "text-[#111827]"
+                  : "text-[#6B7280] hover:text-[#111827]"
               }`}
             >
               {l.label}
             </a>
           ))}
-          <a
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Docs
-          </a>
         </nav>
         <div className="flex items-center gap-2">
           <a
-            href="#chat"
-            className="hidden text-[13px] text-muted-foreground hover:text-foreground sm:inline-flex"
+            href="#contact"
+            className="hidden text-[13px] font-medium text-[#6B7280] hover:text-[#111827] sm:inline-flex"
           >
-            Sign in
+            Contact
           </a>
-          <Button asChild size="sm" className="h-8 rounded-md px-3 text-[13px]">
+          <Button
+            asChild
+            size="sm"
+            className="h-9 rounded-[10px] bg-primary px-3.5 text-[13px] font-medium text-primary-foreground hover:bg-primary/90"
+          >
             <a href="#chat">
-              Get started <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              Launch SageSync <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </a>
           </Button>
         </div>
@@ -185,138 +220,115 @@ function Nav() {
 
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden border-b border-border">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] opacity-60"
-        style={{
-          backgroundImage:
-            "radial-gradient(600px 320px at 50% 0%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 70%)",
-        }}
-      />
-      <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <a
-            href="#chat"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <span className="inline-flex h-4 items-center rounded-full bg-primary/10 px-1.5 text-[10px] font-medium text-primary">
-              v1.0
-            </span>
-            Now supporting complaint tracking
-            <ArrowUpRight className="h-3 w-3" />
-          </a>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
-            The AI campus assistant
-            <br />
-            <span className="text-muted-foreground">for SAGE University Indore.</span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-            Ask anything about fees, hostels, transport, ERP or exams. Raise a
-            complaint and track it — all from one clean interface.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-            <Button asChild className="h-10 rounded-md px-4 text-sm">
-              <a href="#chat">
-                Start chatting <ArrowRight className="ml-1.5 h-4 w-4" />
-              </a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="h-10 rounded-md border-border px-4 text-sm"
-            >
-              <a href="#features">See features</a>
-            </Button>
-          </div>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-foreground" /> No signup required
+    <section
+      id="top"
+      className="relative overflow-hidden border-b border-border bg-background"
+    >
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-16 md:pt-24">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+          {/* LEFT */}
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-[#F8FAFC] px-3 py-1 text-xs font-medium text-[#374151]">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Official AI Campus Companion
             </div>
-            <div className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-foreground" /> Instant answers
+            <h1 className="mt-6 text-[40px] font-bold leading-[1.05] tracking-tight text-[#111827] md:text-[56px]">
+              The Fastest Way to
+              <br />
+              Get Campus Help.
+            </h1>
+            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-[#374151] md:text-[18px]">
+              One AI assistant for university FAQs, official contacts, hostel
+              information, student services, complaint registration and
+              complaint tracking.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button
+                asChild
+                className="h-11 rounded-[10px] bg-primary px-5 text-[14px] font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                <a href="#chat">
+                  Launch SageSync <ArrowRight className="ml-1.5 h-4 w-4" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-11 rounded-[10px] border-border bg-background px-5 text-[14px] font-medium text-[#111827] hover:bg-[#F8FAFC]"
+              >
+                <a href="#chat">See Live Demo</a>
+              </Button>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-foreground" /> Free for students
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-[#374151]">
+              {[
+                "Official University Information",
+                "AI Powered",
+                "Complaint Tracking",
+                "Available 24×7",
+              ].map((t) => (
+                <div key={t} className="flex items-center gap-1.5">
+                  <Check className="h-4 w-4 text-[#22C55E]" />
+                  <span>{t}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        <div className="relative mx-auto mt-16 max-w-4xl">
-          <div className="rounded-xl border border-border bg-card shadow-elegant">
-            <ChatPreviewMock />
+          {/* RIGHT — browser preview */}
+          <div className="relative">
+            <div className="overflow-hidden rounded-[12px] border border-border bg-card shadow-[0_1px_2px_rgba(17,24,39,0.04),0_12px_32px_-16px_rgba(17,24,39,0.12)]">
+              <BrowserPreview />
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-8 -bottom-6 h-10 rounded-full bg-[#111827]/10 blur-2xl"
+            />
           </div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-10 -bottom-6 h-12 rounded-full bg-foreground/10 blur-2xl"
-          />
         </div>
       </div>
     </section>
   );
 }
 
-function ChatPreviewMock() {
+function BrowserPreview() {
   return (
     <div>
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+      {/* browser chrome */}
+      <div className="flex items-center gap-2 border-b border-border bg-[#F8FAFC] px-4 py-2.5">
         <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-border" />
-          <span className="h-2.5 w-2.5 rounded-full bg-border" />
-          <span className="h-2.5 w-2.5 rounded-full bg-border" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#E5E7EB]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#E5E7EB]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#E5E7EB]" />
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-3 py-1 text-[11px] text-muted-foreground">
-          <ShieldCheck className="h-3 w-3" /> sagesync.app/chat
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1 text-[11px] text-[#6B7280]">
+          <ShieldCheck className="h-3 w-3 text-[#22C55E]" /> sagesync.app/chat
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-[220px_1fr]">
-        <aside className="hidden border-r border-border p-3 md:block">
-          <div className="mb-2 px-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            Recent
-          </div>
-          {[
-            "Hostel fee structure",
-            "Library on Sundays",
-            "Complaint #SG-4210",
-            "Bus route to Vijay Nagar",
-          ].map((t, i) => (
-            <div
-              key={t}
-              className={`truncate rounded-md px-2 py-1.5 text-[12px] ${
-                i === 0
-                  ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:bg-muted/60"
-              }`}
-            >
-              {t}
-            </div>
-          ))}
-        </aside>
-        <div className="flex flex-col">
-          <div className="flex-1 space-y-4 px-5 py-6">
-            <MockBubble
-              role="user"
-              text="What are the hostel fees for first-year B.Tech students?"
-            />
-            <MockBubble
-              role="assistant"
-              text={`For **B.Tech first-year** students at SAGE University Indore, hostel fees are approximately:\n\n- **AC (Triple sharing):** ₹1,05,000 / year\n- **Non-AC (Triple sharing):** ₹85,000 / year\n\nThis includes mess and laundry. Want me to open the fee brochure?`}
-            />
-            <MockBubble role="user" text="Also, my Wi-Fi in Block C isn't working." />
-            <MockBubble
-              role="assistant"
-              text={`Got it — I've filed a complaint for you.\n\n**Complaint ID:** SG-4210 · **Category:** Network / Wi-Fi · **Block:** C\n\nYou'll get a status update within 24 hours.`}
-            />
-          </div>
-          <div className="border-t border-border p-3">
-            <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2">
-              <span className="flex-1 text-[13px] text-muted-foreground">
-                Ask about fees, hostel, transport…
-              </span>
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <Send className="h-3.5 w-3.5" />
-              </div>
-            </div>
+      {/* chat body */}
+      <div className="flex flex-col gap-4 bg-background px-5 py-6">
+        <PreviewBubble
+          role="user"
+          text="What are the library timings?"
+        />
+        <PreviewBubble
+          role="assistant"
+          text="The **Central Library** is open **Monday–Saturday** from **8 AM to 8 PM**."
+        />
+        <PreviewBubble
+          role="user"
+          text="I want to register a hostel complaint."
+        />
+        <PreviewBubble
+          role="assistant"
+          text="Sure. Please provide your **Student Name** and **Student ID** to get started."
+        />
+        {/* input row */}
+        <div className="mt-2 flex items-center gap-2 rounded-[10px] border border-border bg-background px-3 py-2">
+          <span className="flex-1 text-[13px] text-[#6B7280]">
+            Ask about fees, hostel, transport…
+          </span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <Send className="h-3.5 w-3.5" />
           </div>
         </div>
       </div>
@@ -324,18 +336,23 @@ function ChatPreviewMock() {
   );
 }
 
-function MockBubble({ role, text }: { role: "user" | "assistant"; text: string }) {
+function PreviewBubble({ role, text }: { role: "user" | "assistant"; text: string }) {
   const isUser = role === "user";
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+      {!isUser && (
+        <div className="mr-2 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#111827] text-white">
+          <Sparkles className="h-3 w-3" />
+        </div>
+      )}
       <div
-        className={`max-w-[80%] rounded-lg px-3.5 py-2 text-[13px] leading-relaxed ${
+        className={`max-w-[82%] rounded-[10px] px-3.5 py-2 text-[13px] leading-relaxed ${
           isUser
-            ? "border border-border bg-muted/60 text-foreground"
-            : "bg-background text-foreground"
+            ? "bg-primary text-primary-foreground"
+            : "border border-border bg-[#F8FAFC] text-[#111827]"
         }`}
       >
-        <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:font-semibold prose-strong:text-foreground">
+        <div className="prose prose-sm max-w-none prose-p:my-0 prose-strong:font-semibold prose-strong:text-inherit">
           <ReactMarkdown>{text}</ReactMarkdown>
         </div>
       </div>
@@ -343,24 +360,27 @@ function MockBubble({ role, text }: { role: "user" | "assistant"; text: string }
   );
 }
 
-function LogoStrip() {
+function TrustSection() {
+  const items = [
+    { icon: BadgeCheck, label: "Official University Information" },
+    { icon: Bot, label: "AI Powered Assistance" },
+    { icon: ClipboardList, label: "Complaint Registration" },
+    { icon: Activity, label: "Complaint Tracking" },
+    { icon: LifeBuoy, label: "24×7 Student Support" },
+  ];
   return (
-    <section className="border-b border-border py-10">
-      <div className="mx-auto max-w-6xl px-6">
-        <p className="text-center text-xs uppercase tracking-wider text-muted-foreground">
-          Trusted by students across SAGE University Indore
-        </p>
-        <div className="mt-6 grid grid-cols-2 gap-6 opacity-60 sm:grid-cols-3 md:grid-cols-6">
-          {["Engineering", "Management", "Law", "Sciences", "Design", "Pharmacy"].map(
-            (n) => (
-              <div
-                key={n}
-                className="text-center text-sm font-medium tracking-tight text-muted-foreground"
-              >
-                {n}
-              </div>
-            ),
-          )}
+    <section className="border-b border-border bg-[#F8FAFC]">
+      <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          {items.map(({ icon: Icon, label }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 text-[13px] font-medium text-[#374151]"
+            >
+              <Icon className="h-4 w-4 text-[#6B7280]" />
+              {label}
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -369,63 +389,83 @@ function LogoStrip() {
 
 function Features() {
   return (
-    <section id="features" className="border-b border-border">
+    <section id="features" className="border-b border-border bg-background">
       <div className="mx-auto max-w-6xl px-6 py-24">
         <div className="max-w-2xl reveal">
-          <div className="text-xs font-medium uppercase tracking-wider text-primary">
+          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
             Features
           </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-            Built for how students actually ask.
+          <h2 className="mt-3 text-[32px] font-bold tracking-tight text-[#111827] md:text-[36px]">
+            Everything a SAGE student needs, in one place.
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            One assistant that understands your campus — from mess timings to
-            complaint tracking.
+          <p className="mt-3 text-[16px] leading-relaxed text-[#374151]">
+            From official contacts to complaint tracking — SageSync gives you
+            direct, verified answers without the runaround.
           </p>
         </div>
 
-        {/* Asymmetric bento grid */}
-        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-6 md:grid-rows-2">
-          {/* Large feature */}
+        {/* Asymmetric grid: 6-col x 3-row */}
+        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-6">
+          {/* Row 1: 4 + 2 */}
           <FeatureCard
-            className="md:col-span-4 md:row-span-1"
+            className="md:col-span-4"
             icon={Brain}
-            title="AI-powered answers"
-            desc="Ask in plain English or Hindi. SageSync understands context, follow-ups, and campus-specific abbreviations."
+            title="AI Campus Assistant"
+            desc="Conversational answers about fees, timings, ERP, transport and more — trained on SAGE University's official information."
             visual={
               <div className="mt-6 grid gap-2">
-                <div className="rounded-md border border-border bg-muted/40 px-3 py-2 text-[12px] text-muted-foreground">
-                  "kal library kitne baje khulti hai?"
+                <div className="rounded-[10px] border border-border bg-[#F8FAFC] px-3 py-2 text-[12.5px] text-[#374151]">
+                  "When does the library close on Saturdays?"
                 </div>
-                <div className="rounded-md border border-border bg-background px-3 py-2 text-[12px]">
-                  The Central Library opens at <b>9:00 AM</b> on weekdays.
+                <div className="rounded-[10px] border border-border bg-background px-3 py-2 text-[12.5px] text-[#111827]">
+                  The Central Library closes at <b>8:00 PM</b> on Saturdays.
                 </div>
               </div>
             }
           />
           <FeatureCard
             className="md:col-span-2"
-            icon={Zap}
-            title="Instant responses"
-            desc="Sub-second answers powered by streaming inference."
+            icon={MessageCircleQuestion}
+            title="University FAQs"
+            desc="Instant answers to the most common student questions."
+          />
+          {/* Row 2: 2 + 2 + 2 */}
+          <FeatureCard
+            className="md:col-span-2"
+            icon={Phone}
+            title="Official Contacts"
+            desc="Verified phone numbers and emails for every desk."
+          />
+          <FeatureCard
+            className="md:col-span-2"
+            icon={Building2}
+            title="Department Contacts"
+            desc="Reach the right department without asking around."
           />
           <FeatureCard
             className="md:col-span-2"
             icon={ClipboardList}
-            title="Complaint logging"
-            desc="File and track hostel, mess, or infrastructure issues."
+            title="Complaint Registration"
+            desc="File hostel, mess or infra issues in seconds."
+          />
+          {/* Row 3: 2 + 4 */}
+          <FeatureCard
+            className="md:col-span-2"
+            icon={ClipboardCheck}
+            title="Complaint Tracking"
+            desc="Track status with your unique complaint ID."
           />
           <FeatureCard
             className="md:col-span-2"
-            icon={Database}
-            title="Verified data"
-            desc="Sourced from official university records — never guessed."
+            icon={Users}
+            title="Student Services"
+            desc="Scholarships, ERP help, transport and more."
           />
           <FeatureCard
             className="md:col-span-2"
-            icon={ShieldCheck}
-            title="Private by default"
-            desc="No sign-up. Conversations aren't tied to your identity."
+            icon={Zap}
+            title="Instant Support"
+            desc="Available 24×7 with sub-second responses."
           />
         </div>
       </div>
@@ -448,13 +488,15 @@ function FeatureCard({
 }) {
   return (
     <div
-      className={`reveal group relative flex flex-col rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-elegant ${className}`}
+      className={`reveal group relative flex flex-col rounded-[12px] border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#111827]/15 hover:shadow-[0_2px_4px_rgba(17,24,39,0.04),0_8px_20px_-12px_rgba(17,24,39,0.12)] ${className}`}
     >
-      <div className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground">
-        <Icon className="h-4 w-4" />
+      <div className="flex h-9 w-9 items-center justify-center rounded-[8px] border border-border bg-[#F8FAFC] text-[#111827]">
+        <Icon className="h-[18px] w-[18px]" />
       </div>
-      <h3 className="mt-4 text-[15px] font-semibold tracking-tight">{title}</h3>
-      <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
+      <h3 className="mt-5 text-[18px] font-semibold tracking-tight text-[#111827]">
+        {title}
+      </h3>
+      <p className="mt-1.5 text-[14px] leading-relaxed text-[#374151]">
         {desc}
       </p>
       {visual}
@@ -465,54 +507,227 @@ function FeatureCard({
 function HowItWorks() {
   const steps = [
     {
-      n: "01",
       icon: MessageCircleQuestion,
-      title: "Ask",
-      desc: "Type any campus question in plain language.",
+      title: "Ask your question",
+      desc: "Type anything about campus life in plain language.",
     },
     {
-      n: "02",
-      icon: Database,
-      title: "Get answers",
-      desc: "SageSync pulls from the verified university knowledge base.",
+      icon: FileSearch,
+      title: "AI searches the official database",
+      desc: "SageSync scans verified SAGE University information.",
     },
     {
-      n: "03",
-      icon: ClipboardCheck,
-      title: "Track",
-      desc: "File complaints and follow their status using your ID.",
+      icon: BadgeCheck,
+      title: "Receive verified information",
+      desc: "Get accurate answers with the sources you can trust.",
+    },
+    {
+      icon: LifeBuoy,
+      title: "Need support?",
+      desc: "Escalate directly from the chat when you need more help.",
+    },
+    {
+      icon: ClipboardList,
+      title: "Register your complaint",
+      desc: "File hostel, mess or infrastructure issues in one flow.",
+    },
+    {
+      icon: Activity,
+      title: "Track complaint status",
+      desc: "Follow real-time updates using your complaint ID.",
     },
   ];
   return (
-    <section id="how" className="border-b border-border bg-muted/30">
+    <section id="how" className="border-b border-border bg-[#F8FAFC]">
       <div className="mx-auto max-w-6xl px-6 py-24">
         <div className="max-w-2xl reveal">
-          <div className="text-xs font-medium uppercase tracking-wider text-primary">
-            How it works
+          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+            How It Works
           </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-            Three steps. No learning curve.
+          <h2 className="mt-3 text-[32px] font-bold tracking-tight text-[#111827] md:text-[36px]">
+            A clear path, from question to resolution.
           </h2>
         </div>
-        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
-          {steps.map((s) => (
-            <div
-              key={s.n}
-              className="reveal group bg-card p-8 transition-colors hover:bg-background"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background">
-                  <s.icon className="h-4 w-4" />
+
+        <div className="relative mt-16">
+          {/* vertical line */}
+          <div
+            aria-hidden
+            className="absolute left-[19px] top-2 h-[calc(100%-1rem)] w-px bg-border md:left-1/2 md:-translate-x-1/2"
+          />
+          <ol className="space-y-8">
+            {steps.map((s, i) => (
+              <li
+                key={s.title}
+                className={`reveal relative grid grid-cols-[40px_1fr] items-start gap-4 md:grid-cols-2 md:gap-16 ${
+                  i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
+                }`}
+              >
+                {/* left/right content */}
+                <div
+                  className={`md:${i % 2 === 0 ? "text-right md:pr-12" : "md:pl-12"}`}
+                >
+                  <div
+                    className={`inline-flex flex-col rounded-[12px] border border-border bg-background p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(17,24,39,0.04),0_8px_20px_-12px_rgba(17,24,39,0.12)] md:${
+                      i % 2 === 0 ? "text-right" : "text-left"
+                    }`}
+                  >
+                    <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#6B7280]">
+                      Step {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <h3 className="mt-1.5 text-[20px] font-semibold tracking-tight text-[#111827]">
+                      {s.title}
+                    </h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-[#374151]">
+                      {s.desc}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-xs font-mono text-muted-foreground">{s.n}</div>
-              </div>
-              <h3 className="mt-6 text-[15px] font-semibold tracking-tight">
-                {s.title}
-              </h3>
-              <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
-                {s.desc}
-              </p>
+                {/* node */}
+                <div className="absolute left-0 top-2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-[#111827] md:left-1/2 md:-translate-x-1/2">
+                  <s.icon className="h-[18px] w-[18px]" />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQ() {
+  const items = [
+    {
+      q: "Is SageSync official?",
+      a: "SageSync is a student-built AI companion that references official SAGE University Indore information. Always verify time-sensitive items with the administration.",
+    },
+    {
+      q: "Do I need to sign up?",
+      a: "No. You can start asking questions or file a complaint right away, without creating an account.",
+    },
+    {
+      q: "How do I track a complaint?",
+      a: "Every complaint gets a unique ID (e.g. SG-4210). Ask SageSync 'track complaint SG-4210' to see the latest status.",
+    },
+    {
+      q: "Can I ask in Hindi?",
+      a: "Yes. SageSync understands English, Hindi and common Hinglish phrasings used on campus.",
+    },
+    {
+      q: "Is my conversation private?",
+      a: "Conversations are used only to answer your query. We do not tie them to your student identity.",
+    },
+  ];
+  return (
+    <section id="faq" className="border-b border-border bg-background">
+      <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_1.5fr]">
+          <div className="reveal">
+            <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+              FAQ
             </div>
+            <h2 className="mt-3 text-[32px] font-bold tracking-tight text-[#111827] md:text-[36px]">
+              Frequently asked questions.
+            </h2>
+            <p className="mt-3 text-[16px] leading-relaxed text-[#374151]">
+              Everything you need to know before you start chatting.
+            </p>
+          </div>
+          <div className="reveal divide-y divide-border rounded-[12px] border border-border bg-card">
+            {items.map((it, i) => (
+              <FAQItem key={it.q} q={it.q} a={it.a} defaultOpen={i === 0} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQItem({ q, a, defaultOpen }: { q: string; a: string; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return (
+    <div>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+      >
+        <span className="text-[15px] font-semibold text-[#111827]">{q}</span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[#6B7280] transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {open && (
+        <div className="px-5 pb-5 text-[14px] leading-relaxed text-[#374151]">
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Contact() {
+  const items = [
+    {
+      icon: Mail,
+      title: "Email",
+      value: "sagesync@sageuniversity.in",
+      href: "mailto:sagesync@sageuniversity.in",
+    },
+    {
+      icon: Phone,
+      title: "Student helpline",
+      value: "+91 731 000 0000",
+      href: "tel:+917310000000",
+    },
+    {
+      icon: MapPin,
+      title: "Campus",
+      value: "SAGE University, Kailod Kartal, Indore",
+      href: "#",
+    },
+    {
+      icon: BellRing,
+      title: "Status updates",
+      value: "All systems operational",
+      href: "#",
+    },
+  ];
+  return (
+    <section id="contact" className="border-b border-border bg-[#F8FAFC]">
+      <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="max-w-2xl reveal">
+          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+            Contact
+          </div>
+          <h2 className="mt-3 text-[32px] font-bold tracking-tight text-[#111827] md:text-[36px]">
+            Talk to a real person, when you need one.
+          </h2>
+          <p className="mt-3 text-[16px] leading-relaxed text-[#374151]">
+            SageSync handles most questions instantly. For everything else, the
+            SAGE University student desk is a click away.
+          </p>
+        </div>
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((it) => (
+            <a
+              key={it.title}
+              href={it.href}
+              className="reveal group flex flex-col rounded-[12px] border border-border bg-background p-5 transition-all hover:-translate-y-0.5 hover:border-[#111827]/15 hover:shadow-[0_2px_4px_rgba(17,24,39,0.04),0_8px_20px_-12px_rgba(17,24,39,0.12)]"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-[8px] border border-border bg-[#F8FAFC] text-[#111827]">
+                <it.icon className="h-[18px] w-[18px]" />
+              </div>
+              <div className="mt-4 text-[12px] font-semibold uppercase tracking-wider text-[#6B7280]">
+                {it.title}
+              </div>
+              <div className="mt-1 text-[14px] font-medium text-[#111827]">
+                {it.value}
+              </div>
+            </a>
           ))}
         </div>
       </div>
@@ -522,18 +737,18 @@ function HowItWorks() {
 
 function ChatSection() {
   return (
-    <section id="chat" className="border-b border-border">
+    <section id="chat" className="border-b border-border bg-background">
       <div className="mx-auto max-w-5xl px-6 py-24">
         <div className="max-w-2xl reveal">
-          <div className="text-xs font-medium uppercase tracking-wider text-primary">
+          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
             Live demo
           </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+          <h2 className="mt-3 text-[32px] font-bold tracking-tight text-[#111827] md:text-[36px]">
             Talk to SageSync.
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            Ask anything about SAGE University, or describe an issue to raise a
-            complaint.
+          <p className="mt-3 text-[16px] leading-relaxed text-[#374151]">
+            Ask anything about SAGE University Indore, or describe an issue to
+            raise a complaint.
           </p>
         </div>
         <div className="mt-10 reveal">
@@ -606,23 +821,27 @@ function ChatWindow() {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-elegant">
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
+    <div className="overflow-hidden rounded-[16px] border border-border bg-card shadow-[0_1px_2px_rgba(17,24,39,0.04),0_12px_32px_-16px_rgba(17,24,39,0.12)]">
+      <div className="flex items-center justify-between border-b border-border bg-[#F8FAFC] px-5 py-3">
         <div className="flex items-center gap-2.5">
           <BrandMark size="sm" />
           <div>
-            <div className="text-[13px] font-semibold">SageSync</div>
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Online
+            <div className="text-[13px] font-semibold text-[#111827]">
+              SageSync
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" /> Online
             </div>
           </div>
         </div>
-        <div className="text-[11px] text-muted-foreground">Powered by AI</div>
+        <div className="text-[11px] font-medium text-[#6B7280]">
+          Powered by AI
+        </div>
       </div>
 
       <div
         ref={scrollRef}
-        className="flex h-[520px] flex-col gap-4 overflow-y-auto px-4 py-6 md:px-8"
+        className="flex h-[520px] flex-col gap-4 overflow-y-auto bg-background px-4 py-6 md:px-8"
       >
         {messages.length === 0 && <EmptyState onPick={submit} />}
         {messages.map((m) => (
@@ -630,7 +849,7 @@ function ChatWindow() {
         ))}
         {isLoading && <TypingIndicator />}
         {error && (
-          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+          <div className="flex items-start gap-2 rounded-[10px] border border-[#EF4444]/30 bg-[#EF4444]/5 p-3 text-sm text-[#EF4444]">
             <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -638,13 +857,13 @@ function ChatWindow() {
       </div>
 
       {messages.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 border-t border-border bg-muted/30 px-4 py-3 md:px-6">
+        <div className="flex flex-wrap gap-1.5 border-t border-border bg-[#F8FAFC] px-4 py-3 md:px-6">
           {SUGGESTIONS.slice(0, 4).map((s) => (
             <button
               key={s.label}
               onClick={() => submit(s.label)}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-[10px] border border-border bg-background px-2.5 py-1 text-[12px] font-medium text-[#374151] transition-colors hover:border-[#111827]/20 hover:text-[#111827] disabled:opacity-50"
             >
               <s.icon className="h-3 w-3" />
               {s.label}
@@ -672,13 +891,13 @@ function ChatWindow() {
           }}
           rows={1}
           placeholder="Ask about hostel fees, mess timings, or raise a complaint…"
-          className="max-h-40 min-h-[40px] flex-1 resize-none rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none transition-shadow focus:border-primary/50 focus:ring-2 focus:ring-primary/15"
+          className="max-h-40 min-h-[40px] flex-1 resize-none rounded-[10px] border border-input bg-background px-3 py-2.5 text-sm outline-none transition-shadow focus:border-primary/50 focus:ring-2 focus:ring-primary/15"
         />
         <Button
           type="submit"
           size="icon"
           disabled={!input.trim() || isLoading}
-          className="h-10 w-10 shrink-0 rounded-md"
+          className="h-10 w-10 shrink-0 rounded-[10px] bg-primary hover:bg-primary/90"
           aria-label="Send message"
         >
           <Send className="h-4 w-4" />
@@ -691,17 +910,17 @@ function ChatWindow() {
 function EmptyState({ onPick }: { onPick: (text: string) => void }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
-      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-background">
-        <Sparkles className="h-4 w-4 text-foreground" />
+      <div className="flex h-11 w-11 items-center justify-center rounded-[10px] bg-[#111827] text-white">
+        <Sparkles className="h-4 w-4" />
       </div>
-      <h3 className="mt-4 text-lg font-semibold tracking-tight">
+      <h3 className="mt-4 text-[20px] font-semibold tracking-tight text-[#111827]">
         How can I help you today?
       </h3>
-      <p className="mt-1.5 max-w-md text-[13px] text-muted-foreground">
+      <p className="mt-1.5 max-w-md text-[14px] text-[#374151]">
         Ask about SAGE University life, timings, contacts, or describe an issue
         to raise a complaint.
       </p>
-      <p className="mt-6 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+      <p className="mt-6 text-[10px] font-semibold uppercase tracking-wider text-[#6B7280]">
         Try one of these
       </p>
       <div className="mt-3 grid w-full max-w-2xl grid-cols-2 gap-2 sm:grid-cols-4">
@@ -709,9 +928,9 @@ function EmptyState({ onPick }: { onPick: (text: string) => void }) {
           <button
             key={s.label}
             onClick={() => onPick(s.label)}
-            className="group flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-left text-[12px] text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-foreground/20 hover:text-foreground hover:shadow-card"
+            className="group flex items-center gap-2 rounded-[10px] border border-border bg-background px-3 py-2 text-left text-[12.5px] font-medium text-[#374151] transition-all hover:-translate-y-0.5 hover:border-[#111827]/20 hover:text-[#111827] hover:shadow-[0_2px_4px_rgba(17,24,39,0.04),0_6px_16px_-10px_rgba(17,24,39,0.15)]"
           >
-            <s.icon className="h-3.5 w-3.5 text-foreground/70 transition-transform group-hover:scale-110" />
+            <s.icon className="h-3.5 w-3.5 text-[#6B7280] transition-transform group-hover:scale-110" />
             <span className="truncate">{s.label}</span>
           </button>
         ))}
@@ -727,22 +946,22 @@ function MessageBubble({ role, text }: { role: string; text: string }) {
       className={`flex gap-3 animate-fade-in-up ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background">
-          <Sparkles className="h-3 w-3 text-foreground" />
+        <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[#111827] text-white">
+          <Sparkles className="h-3 w-3" />
         </div>
       )}
       <div className={`max-w-[85%] ${isUser ? "order-1" : ""}`}>
         <div
           className={
             isUser
-              ? "rounded-lg bg-primary px-3.5 py-2 text-[13.5px] text-primary-foreground"
-              : "rounded-lg border border-border bg-background px-3.5 py-2 text-[13.5px] text-foreground"
+              ? "rounded-[10px] bg-primary px-3.5 py-2 text-[14px] text-primary-foreground"
+              : "rounded-[10px] border border-border bg-[#F8FAFC] px-3.5 py-2 text-[14px] text-[#111827]"
           }
         >
           {isUser ? (
             <p className="whitespace-pre-wrap">{text}</p>
           ) : (
-            <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-strong:text-foreground">
+            <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-strong:text-[#111827]">
               <ReactMarkdown>{text}</ReactMarkdown>
             </div>
           )}
@@ -755,21 +974,21 @@ function MessageBubble({ role, text }: { role: string; text: string }) {
 function TypingIndicator() {
   return (
     <div className="flex items-end gap-3 animate-fade-in-up">
-      <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background">
-        <Sparkles className="h-3 w-3 text-foreground" />
+      <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[#111827] text-white">
+        <Sparkles className="h-3 w-3" />
       </div>
-      <div className="rounded-lg border border-border bg-background px-3.5 py-2.5">
+      <div className="rounded-[10px] border border-border bg-[#F8FAFC] px-3.5 py-2.5">
         <div className="flex items-center gap-1">
           <span
-            className="typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground"
+            className="typing-dot h-1.5 w-1.5 rounded-full bg-[#6B7280]"
             style={{ animationDelay: "0s" }}
           />
           <span
-            className="typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground"
+            className="typing-dot h-1.5 w-1.5 rounded-full bg-[#6B7280]"
             style={{ animationDelay: "0.15s" }}
           />
           <span
-            className="typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground"
+            className="typing-dot h-1.5 w-1.5 rounded-full bg-[#6B7280]"
             style={{ animationDelay: "0.3s" }}
           />
         </div>
@@ -782,7 +1001,7 @@ function Footer() {
   const cols = [
     {
       title: "Product",
-      links: ["Features", "Chat", "How it works", "Changelog"],
+      links: ["Features", "How It Works", "Chat", "Changelog"],
     },
     {
       title: "Resources",
@@ -795,42 +1014,48 @@ function Footer() {
   ];
   return (
     <footer className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <BrandMark />
-              <span className="text-[15px] font-semibold tracking-tight">
-                SageSync
-              </span>
+              <div className="leading-tight">
+                <div className="text-[15px] font-semibold tracking-tight text-[#111827]">
+                  SageSync
+                </div>
+                <div className="text-[10px] font-medium uppercase tracking-wider text-[#6B7280]">
+                  Official AI Campus Companion
+                </div>
+              </div>
             </div>
-            <p className="mt-4 max-w-xs text-[13px] text-muted-foreground">
-              The AI campus assistant for SAGE University Indore. Made by
-              students, for students.
+            <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[#374151]">
+              Helping SAGE University students instantly access official campus
+              information, department contacts, student services and complaint
+              management.
             </p>
             <div className="mt-5 flex items-center gap-2">
               {[Github, Twitter, Linkedin].map((Icon, i) => (
                 <a
                   key={i}
                   href="#"
-                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+                  className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-border text-[#6B7280] transition-colors hover:border-[#111827]/20 hover:text-[#111827]"
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
           </div>
           {cols.map((c) => (
             <div key={c.title}>
-              <div className="text-[12px] font-semibold text-foreground">
+              <div className="text-[12px] font-semibold uppercase tracking-wider text-[#111827]">
                 {c.title}
               </div>
-              <ul className="mt-3 space-y-2 text-[13px]">
+              <ul className="mt-4 space-y-2.5 text-[14px]">
                 {c.links.map((l) => (
                   <li key={l}>
                     <a
                       href="#"
-                      className="text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-[#6B7280] transition-colors hover:text-[#111827]"
                     >
                       {l}
                     </a>
@@ -840,10 +1065,10 @@ function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-[12px] text-muted-foreground md:flex-row md:items-center">
-          <div>© {new Date().getFullYear()} SageSync. All rights reserved.</div>
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-[12px] text-[#6B7280] md:flex-row md:items-center">
+          <div>© {new Date().getFullYear()} SageSync. Built for SAGE University Indore students.</div>
           <div className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
             All systems normal
           </div>
         </div>
