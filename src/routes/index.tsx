@@ -915,7 +915,7 @@ function ChatWindow() {
       >
         {messages.length === 0 && <EmptyState onPick={submit} />}
         {messages.map((m) => (
-          <MessageBubble key={m.id} message={m} />
+          <MessageBubble key={m.id} message={m} onQuick={submit} />
         ))}
         {isLoading && <TypingIndicator />}
         {error && (
