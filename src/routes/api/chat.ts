@@ -15,7 +15,7 @@ import { createFileRoute } from "@tanstack/react-router";
 // and production without editing code. Defaults to the test URL for local
 // debugging against "Listen for test event".
 const DEFAULT_N8N_WEBHOOK_URL =
-  "https://ashutosh2005.app.n8n.cloud/webhook-test/0be283df-ac6d-4d36-8c5f-84c16625fa02";
+  "https://ashutosh2005.app.n8n.cloud/webhook-test/campus-chat";
 
 export const Route = createFileRoute("/api/chat")({
   server: {
