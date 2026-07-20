@@ -80,7 +80,9 @@ export const Route = createFileRoute("/api/chat")({
           );
 
           if (!res.ok) {
-            // Surface n8n's own message + a hint so the UI shows why it failed.
+            // n8n test webhooks return 404 when they are not actively listening.
+            // The chat UI should not receive a failing app response; it should show
+            // the required fallback assistant message while diagnostics stay in logs.
             const isTestUrl = webhookUrl.includes("/webhook-test/");
             const hint =
               res.status === 404
@@ -88,27 +90,30 @@ export const Route = createFileRoute("/api/chat")({
                   ? "n8n test webhooks only accept ONE request per click of 'Listen for test event'. Click it again in n8n, then retry. For always-on use, switch to the production URL (/webhook/<id>) and activate the workflow."
                   : "n8n production webhook is not registered. Open the workflow in n8n and toggle 'Active' ON (top-right)."
                 : undefined;
-            return Response.json(
-              {
-                error: `n8n webhook returned ${res.status}`,
-                url: webhookUrl,
-                details: reply,
-                hint,
-              },
-              { status: 502 },
-            );
+            console.warn("[api/chat] n8n request failed", {
+              status: res.status,
+              url: webhookUrl,
+              details: reply,
+              hint,
+            });
+
+            return Response.json({
+              reply: "Sorry, something went wrong while contacting the AI assistant.",
+              error: `n8n webhook returned ${res.status}`,
+              url: webhookUrl,
+              details: reply,
+              hint,
+            });
           }
 
           return Response.json({ reply: reply || "(no response)", raw });
         } catch (err) {
           console.error("[api/chat] fetch failed:", err);
-          return Response.json(
-            {
-              error: err instanceof Error ? err.message : "Failed to reach n8n",
-              url: webhookUrl,
-            },
-            { status: 502 },
-          );
+          return Response.json({
+            reply: "Sorry, something went wrong while contacting the AI assistant.",
+            error: err instanceof Error ? err.message : "Failed to reach n8n",
+            url: webhookUrl,
+          });
         }
       },
     },
